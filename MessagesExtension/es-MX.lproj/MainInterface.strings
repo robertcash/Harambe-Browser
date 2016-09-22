@@ -1,0 +1,12 @@
+
+/* Class = "UITextField"; placeholder = "Enter Website"; ObjectID = "Xqz-lU-OMT"; */
+"Xqz-lU-OMT.placeholder" = "Enter Website";
+
+/* Class = "UILabel"; text = "A connection error occured, please try again."; ObjectID = "b7A-9J-Y2Z"; */
+"b7A-9J-Y2Z.text" = "A connection error occured, please try again.";
+
+/* Class = "UIButton"; normalTitle = "Go"; ObjectID = "gEu-3e-TgT"; */
+"gEu-3e-TgT.normalTitle" = "Go";
+
+/* Class = "UIButton"; normalTitle = "Send "; ObjectID = "nX6-kf-7CH"; */
+"nX6-kf-7CH.normalTitle" = "Send ";

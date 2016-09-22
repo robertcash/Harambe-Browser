@@ -5,3 +5,13 @@
   Created by Robert Cash on 9/21/16.
   Copyright © 2016 Robert Cash. All rights reserved.
 */
+"Go" = "Go";
+"Send Browser" = "Send Browser";
+"Back" = "Back";
+"Refresh" = "Refresh";
+"Forward" = "Forward";
+"Search or enter website name" = "Search or enter website name";
+"A connection error occured, please try again" = "A connection error occured, please try again";
+"Web Browser" = "Web Browser";
+"Address Bar" = "Address Bar";
+"%@ sent a browser!"="%@ sent a browser!";

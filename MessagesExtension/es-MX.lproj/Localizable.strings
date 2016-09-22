@@ -5,3 +5,14 @@
   Created by Robert Cash on 9/21/16.
   Copyright © 2016 Robert Cash. All rights reserved.
 */
+"Go" = "Ir";
+"Send Browser" = "Enviar Navegador";
+"Back" = "Espalda";
+"Refresh" = "Recargar";
+"Forward" = "Adelante";
+"Search or enter website name" = "Busca o entrar en la web";
+"A connection error occured, please try again" = "Un error de conexión se produjo, por favor intente de nuevo";
+"Web Browser" = "Navegador web";
+"Address Bar" = "Barra de dirección";
+"send"="%@ envía al navegador!";
+"%@ sent a browser!"="%1$@ envía al navegador!";

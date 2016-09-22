@@ -21,6 +21,79 @@ class MessagesViewController: MSMessagesAppViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - Helper Methods
+    
+    func presentViewController(for conversation: MSConversation, with presentationStyle: MSMessagesAppPresentationStyle){
+        
+        // Remove any child controllers
+        for child in self.childViewControllers {
+            child.willMove(toParentViewController: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParentViewController()
+        }
+        
+        let controller: UIViewController
+        
+        if conversation.selectedMessage?.url == nil {
+            // New object so just show current UI in storyboard
+            controller = self.instantiateController(browserSession: BrowserSession())
+        }
+        else {
+            // Get url
+            let url = conversation.selectedMessage?.url
+            print("url: \(url?.absoluteString)")
+            
+            // Retrival successful, continue.
+            controller = self.instantiateController(browserSession: (url?.browserSession)!)
+        }
+        
+        // Embed the new controller.
+        self.addChildViewController(controller)
+        
+        controller.view.frame = self.view.bounds
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(controller.view)
+        
+        controller.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        controller.view.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        controller.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        controller.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        
+        controller.didMove(toParentViewController: self)
+    }
+    
+    private func instantiateController(browserSession: BrowserSession) -> UIViewController {
+        let controller = (storyboard?.instantiateViewController(withIdentifier: BrowserViewController.storyboardIdentifier) as? BrowserViewController)!
+        controller.browserSession = browserSession
+        controller.browserViewControllerDelegate = self
+            
+        return controller
+    }
+    
+    func composeMessage(with browserSession: BrowserSession, session: MSSession? = nil) -> MSMessage {
+        
+        let layout = MSMessageTemplateLayout()
+        layout.image = browserSession.browserSnapshot
+        layout.caption = String.localizedStringWithFormat(
+            NSLocalizedString("%@ sent a browser!",
+                              comment: "send"),
+            "$\(activeConversation!.localParticipantIdentifier.uuidString)")
+        
+        let message = MSMessage(session: session ?? MSSession())
+        message.url = browserSession.currentWebsite?.toUrl
+        message.layout = layout
+        message.summaryText = String.localizedStringWithFormat(
+            NSLocalizedString("%@ sent a browser!",
+                              comment: "send"),
+            "$\(activeConversation!.localParticipantIdentifier.uuidString)")
+        message.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("%@ sent a browser!",
+                              comment: "send"),
+            "$\(activeConversation!.localParticipantIdentifier.uuidString)")
+        
+        return message
+    }
+    
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
@@ -28,16 +101,7 @@ class MessagesViewController: MSMessagesAppViewController {
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
-    }
-    
-    override func didResignActive(with conversation: MSConversation) {
-        // Called when the extension is about to move from the active to inactive state.
-        // This will happen when the user dissmises the extension, changes to a different
-        // conversation or quits Messages.
-        
-        // Use this method to release shared resources, save user data, invalidate timers,
-        // and store enough state information to restore your extension to its current state
-        // in case it is terminated later.
+        presentViewController(for: conversation, with: presentationStyle)
     }
    
     override func didReceive(_ message: MSMessage, conversation: MSConversation) {
@@ -45,28 +109,33 @@ class MessagesViewController: MSMessagesAppViewController {
         // extension on a remote device.
         
         // Use this method to trigger UI updates in response to the message.
+        if conversation == activeConversation {
+            presentViewController(for: conversation, with: presentationStyle)
+        }
     }
     
-    override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
-        // Called when the user taps the send button.
-    }
-    
-    override func didCancelSending(_ message: MSMessage, conversation: MSConversation) {
-        // Called when the user deletes the message without sending it.
-    
-        // Use this to clean up state related to the deleted message.
-    }
-    
-    override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        // Called before the extension transitions to a new presentation style.
-    
-        // Use this method to prepare for the change in presentation style.
-    }
-    
-    override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        // Called after the extension transitions to a new presentation style.
-    
-        // Use this method to finalize any behaviors associated with the change in presentation style.
-    }
+}
 
+// MARK: - Extensions
+
+extension MessagesViewController: BrowserViewControllerDelegate {
+    
+    func sendBrowser(browserSession: BrowserSession){
+        // Create browser message
+        let messageToSend = composeMessage(with: browserSession, session: activeConversation?.selectedMessage?.session)
+        
+        // Add the message to the conversation.
+        activeConversation?.insert(messageToSend) { error in
+            if let error = error {
+                print(error)
+            }
+        }
+        
+        dismiss()
+    }
+    
+    func expand(){
+        self.requestPresentationStyle(.expanded)
+    }
+    
 }

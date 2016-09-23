@@ -250,7 +250,7 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
             self.websiteTextField.text = input
             return input.toUrl
         }
-        else if(input.contains(".com") && !input.contains(" ")) {
+        else if(input.contains(".") && !input.contains(" ")) {
             // If url doesn't have https:// add it.
             let modifiedURLString = "https://\(input)"
             self.websiteTextField.text = modifiedURLString

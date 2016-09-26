@@ -11,6 +11,8 @@ import Messages
 
 class MessagesViewController: MSMessagesAppViewController {
     
+    weak var messagesViewControllerDelegate: MessagesViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -66,7 +68,8 @@ class MessagesViewController: MSMessagesAppViewController {
         let controller = (storyboard?.instantiateViewController(withIdentifier: BrowserViewController.storyboardIdentifier) as? BrowserViewController)!
         controller.browserSession = browserSession
         controller.browserViewControllerDelegate = self
-            
+        controller.parentController = self
+        
         return controller
     }
     
@@ -114,6 +117,16 @@ class MessagesViewController: MSMessagesAppViewController {
         }
     }
     
+    
+    override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
+        messagesViewControllerDelegate?.updateConstraints()
+    }
+    
+}
+
+// MARK: - Protocols
+protocol MessagesViewControllerDelegate: class {
+    func updateConstraints()
 }
 
 // MARK: - Extensions

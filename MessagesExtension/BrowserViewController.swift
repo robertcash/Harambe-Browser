@@ -14,6 +14,7 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
     // MARK: - Static Variables
     
     static let storyboardIdentifier = "BrowserViewController"
+    weak var parentController: MessagesViewController?
     
     // MARK: - Variables
     
@@ -46,6 +47,7 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
         
         // Delegate declarations
         self.websiteTextField.delegate = self
+        self.parentController?.messagesViewControllerDelegate = self
         
         // Hide unneeded UI Elements
         self.errorLabel.isHidden = true
@@ -101,13 +103,16 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
     override func viewDidAppear(_ animated: Bool) {
         // WKWebView Setup
         self.wkWebView = WKWebView(frame:self.webView.frame)
-        self.wkWebView.frame = CGRect(x: Double(self.webView.bounds.origin.x), y: Double(self.webView.bounds.origin.y), width: Double(self.webView.frame.width), height: Double(self.webView.frame.height))
         self.wkWebView.sizeToFit()
         self.wkWebView.navigationDelegate = self
         
         self.wkWebView.allowsBackForwardNavigationGestures = true
+        
         self.webView.addSubview(self.wkWebView)
+        self.wkWebView.frame = CGRect(x: Double(self.webView.bounds.origin.x), y: Double(self.webView.bounds.origin.y), width: Double(self.webView.frame.width), height: Double(self.webView.frame.height))
+        
         self.webView.addSubview(self.progressView)
+        
         if !(self.browserSession != nil) {
             self.browserSession = BrowserSession()
         }
@@ -126,6 +131,12 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
+        self.wkWebView.frame = CGRect(x: Double(self.webView.bounds.origin.x), y: Double(self.webView.bounds.origin.y), width: Double(self.webView.frame.width), height: Double(self.webView.frame.height))
+        
+    }
+    
     
     // MARK: - Gesture Functions
     
@@ -264,6 +275,7 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
             return modifiedURLString.toUrl
         }
     }
+    
 }
 
 // MARK: - Protocols
@@ -273,5 +285,11 @@ protocol BrowserViewControllerDelegate: class {
     func expand()
 }
 
+// MARK: - Extensions
 
+extension BrowserViewController: MessagesViewControllerDelegate {
+    func updateConstraints() {
+        self.wkWebView.frame = CGRect(x: Double(self.webView.bounds.origin.x), y: Double(self.webView.bounds.origin.y), width: Double(self.webView.frame.width), height: Double(self.webView.frame.height))
+    }
+}
 

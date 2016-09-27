@@ -94,7 +94,7 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
         self.websiteTextField.layer.sublayerTransform = CATransform3DMakeTranslation(2.5, 0, 0)
         self.websiteTextField.clearButtonMode = .whileEditing
         
-        // Gestue setup
+        // Gesture setup
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(BrowserViewController.tap))
         tapGestureRecognizer.delegate = self
         self.view.addGestureRecognizer(tapGestureRecognizer)
@@ -176,6 +176,10 @@ class BrowserViewController: UIViewController, UITextFieldDelegate, WKNavigation
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         self.browserViewControllerDelegate?.expand()
+        self.wkWebView.frame = CGRect(x: Double(self.webView.bounds.origin.x), y: Double(self.webView.bounds.origin.y), width: Double(self.webView.frame.width), height: Double(self.webView.frame.height))
+        if self.parentController?.presentationStyle == .compact{
+            return false
+        }
         return true
     }
     

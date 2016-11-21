@@ -1,6 +1,6 @@
 # Harambe Browser
 
-Browse the Web for Harambe and share your browser with friends via this iMessage app extension for iOS. Proudly supports VoiceOver for vision impaired users. Supported languages are English and Spanish.
+Browse the Web and share your browser with friends via this iMessage app extension for iOS. Proudly supports VoiceOver for vision impaired users. Supported languages are English and Spanish.
 
 App Store Link: https://itunes.apple.com/us/app/monkeysee-browser-web-browser/id1157151657?mt=8
 
